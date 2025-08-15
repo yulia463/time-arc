@@ -1,4 +1,33 @@
+@import '../../../assets/variables.module.scss';
+
 .ContentContainer {
-  color: red;
-  border: 1px solid blue ;
+  display: flex;
+  flex-direction: column;
+  padding-left: 20px;
+  gap: 20px;
+  font-weight: 700;
+  font-size: 56px;
+  line-height: 100%;
+  letter-spacing: -2%;
+  margin-bottom: 20px;
+}
+
+.DatesWrapper {
+  display: flex;
+  gap: 20px;
+}
+
+.FirstDate {
+  color: var(--color-blue);
+}
+
+.SecondDate {
+  color: var(--color-pink);
+}
+
+.GrayLine {
+  height: 1px;
+  background-color: var(--color-gray);
+  margin-top: 57px;
+  width: calc(100% - 40px);
 }
