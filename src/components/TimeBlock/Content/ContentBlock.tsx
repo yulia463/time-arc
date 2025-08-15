@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import style from '../Content/ContentBlock.module.scss';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation } from 'swiper/modules';
+import {Swiper, SwiperSlide} from 'swiper/react';
+import {Navigation} from 'swiper/modules';
 import gsap from 'gsap';
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -11,7 +11,7 @@ function ContentBlock() {
     const timelineRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        gsap.from(timelineRef.current, { opacity: 0, y: 50, duration: 1 });
+        gsap.from(timelineRef.current, {opacity: 0, y: 50, duration: 1});
     }, []);
 
     return (
