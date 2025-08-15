@@ -1,5 +1,5 @@
 import React from 'react';
-import style from 'src/components/TimeBlock/TimeBlock.module.scss';
+import style from './TimeBlock.module.scss'; // относительный путь
 import HeaderBlock from "../Header/HeaderBlock";
 import ContentBlock from "../Content/ContentBlock";
 import FooterBlock from "../Footer/FooterBlock";
