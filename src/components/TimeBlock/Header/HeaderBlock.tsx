@@ -4,7 +4,10 @@ import style from '../Header/HeaderBlock.module.scss';
 function HeaderBlock() {
     return (
         <div className={style.HeaderContainer}>
-            Header
+            <div className={style.HeaderText}>
+                Исторические
+                <br/> даты
+            </div>
         </div>
     );
 }

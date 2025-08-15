@@ -4,7 +4,7 @@ import style from '../Footer/FooterBlock.module.scss';
 function FooterBlock() {
     return (
         <div className={style.FooterContainer}>
-            FooterBlock
+            13 сентября — частное солнечное затмение, видимое в Южной Африке и части Антарктиды
         </div>
     );
 }
