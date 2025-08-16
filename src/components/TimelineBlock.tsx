@@ -55,8 +55,8 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
   // Позиции интерактивных точек по окружности
   const points = useMemo(() => {
     const N = segments.length;
-    const radius = 140; // px
-    const center = { x: 160, y: 160 }; // px — совпадает с размерами .timeline-block__dial svg viewBox
+    const radius = 265; // px
+    const center = { x: 265, y: 265 }; // px — совпадает с размерами .timeline-block__dial svg viewBox
     // стартуем сверху (угол -90°)
     return segments.map((seg, i) => {
       const angle = (-90 + (360 / N) * i) * (Math.PI / 180);
@@ -74,46 +74,39 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
       </header>
 
       <div className="timeline-block__dial" role="tablist" aria-label="Временные отрезки">
-        <svg className="timeline-block__ring" viewBox="0 0 320 320" aria-hidden="true">
-          <circle cx="160" cy="160" r="152" className="timeline-block__ring-bg" />
-          <circle cx="160" cy="160" r="110" className="timeline-block__ring-mid" />
-          <circle cx="160" cy="160" r="68" className="timeline-block__ring-inner" />
-        </svg>
-
-        {points.map(p => (
-          <button
-            key={p.seg.id}
-            role="tab"
-            aria-selected={activeIndex === p.i}
-            className={
-              'timeline-block__dot' + (activeIndex === p.i ? ' is-active' : '')
-            }
-            style={{ left: p.x, top: p.y }}
-            onClick={() => setActiveIndex(p.i)}
-          >
-            <span className="visually-hidden">{p.seg.label} {p.seg.fromYear}–{p.seg.toYear}</span>
-          </button>
-        ))}
+        <div className="timeline-block__ring">
+          {points.map(p => (
+              <button
+                  key={p.seg.id}
+                  role="tab"
+                  aria-selected={activeIndex === p.i}
+                  className={
+                      'timeline-block__dot' + (activeIndex === p.i ? ' is-active' : '')
+                  }
+                  style={{left: p.x, top: p.y}}
+                  onClick={() => setActiveIndex(p.i)}
+              >
+                <span className="visually-hidden">{p.seg.label} {p.seg.fromYear}–{p.seg.toYear}</span>
+              </button>
+          ))}
+        </div>
 
         <div className="timeline-block__info" ref={infoRef}>
           <div className="timeline-block__years" data-anim="fade-up">
             <span className="timeline-block__firstDate">{active.fromYear}</span>
-            <span className="timeline-block__dash">—</span>
             <span className="timeline-block__secondDate">{active.toYear}</span>
           </div>
-          <div className="timeline-block__label" data-anim="fade-up">{active.label}</div>
-          <div className="timeline-block__count" data-anim="fade-up">
-            {String(active.events.length).padStart(2, '0')}
-          </div>
+          {/*<div className="timeline-block__label" data-anim="fade-up">{active.label}</div>*/}
+          {/*<div className="timeline-block__count" data-anim="fade-up">*/}
+          {/*  {String(active.events.length).padStart(2, '0')}*/}
+          {/*</div>*/}
         </div>
 
-        {/* декоративные линии, как в макете */}
-        <div className="timeline-block__decor timeline-block__decor--1" aria-hidden="true" />
-        <div className="timeline-block__decor timeline-block__decor--2" aria-hidden="true" />
-        <div className="timeline-block__decor timeline-block__decor--3" aria-hidden="true" />
+        <div className="timeline-block__decor timeline-block__decor--h" aria-hidden="true"/>
+        <div className="timeline-block__decor timeline-block__decor--v" aria-hidden="true"/>
       </div>
 
-      <EventSlider events={active.events} instanceId={instanceId} />
+      <EventSlider events={active.events} instanceId={instanceId}/>
     </section>
   );
 };
