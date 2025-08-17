@@ -21,7 +21,7 @@ export type TimelineData = {
 export const demoTimeline: TimelineData = {
   segments: [
     {
-      id: 's1',
+      id: '1',
       label: 'Наука',
       fromYear: 2015,
       toYear: 2022,
@@ -47,7 +47,7 @@ export const demoTimeline: TimelineData = {
       ]
     },
     {
-      id: 's2',
+      id: '2',
       label: 'Исторические даты',
       fromYear: 2016,
       toYear: 2019,
@@ -67,7 +67,7 @@ export const demoTimeline: TimelineData = {
       ]
     },
     {
-      id: 's3',
+      id: '3',
       label: 'Технологии',
       fromYear: 2019,
       toYear: 2020,
@@ -87,7 +87,7 @@ export const demoTimeline: TimelineData = {
       ]
     },
     {
-      id: 's4',
+      id: '4',
       label: 'Космос',
       fromYear: 2020,
       toYear: 2021,
@@ -107,7 +107,7 @@ export const demoTimeline: TimelineData = {
       ]
     },
     {
-      id: 's5',
+      id: '5',
       label: 'Открытия',
       fromYear: 2021,
       toYear: 2022,
@@ -127,7 +127,7 @@ export const demoTimeline: TimelineData = {
       ]
     },
     {
-      id: 's6',
+      id: '6',
       label: 'События',
       fromYear: 2015,
       toYear: 2022,
