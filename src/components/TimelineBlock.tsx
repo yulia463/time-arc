@@ -70,7 +70,9 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
     return (
         <section className="timeline-block" ref={rootRef} aria-label={title}>
             <header className="timeline-block__header" data-anim="fade-up">
-                <div className="timeline-block__title">{title}</div>
+                <div className="timeline-block__title">{title.split(" ").map((word, index) =>
+                    index === 1 ? <span key={index} className="second-word">{word}</span> : <span key={index}>{word} </span>
+                )}</div>
                 {/*<div className="timeline-block__fraction" aria-live="polite">{formatFraction(activeIndex, segments.length)}</div>*/}
             </header>
 
