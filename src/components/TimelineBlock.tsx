@@ -111,7 +111,7 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
                     {/*  {String(active.events.length).padStart(2, '0')}*/}
                     {/*</div>*/}
                 </div>
-
+                <div className="timeline-block__mobile-divider" aria-hidden="true"/>
                 <div className="timeline-block__decor timeline-block__decor--h" aria-hidden="true"/>
                 <div className="timeline-block__decor timeline-block__decor--v" aria-hidden="true"/>
             </div>

@@ -49,20 +49,29 @@
 .timeline-block__dial {
   border: 1px solid #8400ff;
   position: relative;
-  height: 100vh;
+  height: 20vh;
   display: grid;
   place-items: center;
   overflow: hidden;
+
+  @media (min-width: 1024px) {
+    height: 100vh;
+  }
 }
 
 .timeline-block__ring {
+  display: none;
+
   border: 1px solid var(--color-text);
   position: relative;
   inset: 0;
   border-radius: 50%;
   width: 530px;
   height: 530px;
-}
+
+  @media (min-width: 1024px) {
+    display: block;
+  }}
 
 .timeline-block__dot {
   display: flex;
@@ -112,19 +121,13 @@
 }
 
 .timeline-block__years {
-  border: 1px solid red;
   display: flex;
-  // сделать их в центре
-  //padding-left: 20px;
   gap: 60px;
   font-weight: 700;
   font-size: 56px;
-  //line-height: 100%;
-  //letter-spacing: -2%;
-  //margin-bottom: 20px;
+  margin-bottom: 57px;
 
   @media (min-width: 1024px) {
-    //padding: 96px 0 185px 217px;
     font-size: 200px;
     line-height: 160px;
     margin-bottom: 0;
@@ -172,6 +175,18 @@
   letter-spacing: 0;
 }
 
+.timeline-block__mobile-divider {
+  position: relative;
+  width: 280px;
+  height: 1px;
+  background: var(--color-gray);
+  top: 57px;
+
+  @media (min-width: 1024px) {
+    display: none;
+  }
+}
+
 .timeline-block__decor {
   position: absolute;
   opacity: .7;
@@ -179,20 +194,31 @@
 }
 
 .timeline-block__decor--h {
+  display: none;
   top: 50%;
   left: 0;
   right: 0;
   height: 1px;
   background-color: var(--color-text);
+
+  @media (min-width: 1024px) {
+    display: block;
+  }
 }
 
 .timeline-block__decor--v {
+  display: none;
   left: 50%;
   top: 0;
   bottom: 0;
   width: 1px;
   background-color: var(--color-text);
+
+  @media (min-width: 1024px) {
+    display: block;
+  }
 }
+
 
 /* Слайдер */
 .timeline-block__slider {
@@ -231,8 +257,6 @@
 }
 
 .timeline-card__title {
-  //font-size: 16px;
-  //margin: 0;
   font-size: 14px;
   font-weight: 400;
   line-height: 145%;
@@ -245,11 +269,6 @@
   }
 }
 
-//.timeline-card__desc {
-//  color: #cfd4e6;
-//  font-size: 14px;
-//  margin: 0;
-//}
 
 .timeline-block__nav {
   display: flex;
