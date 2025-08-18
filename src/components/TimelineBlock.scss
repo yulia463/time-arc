@@ -229,10 +229,8 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+  border: 1px solid red;
 
-  @media (min-width: 1024px) {
-    gap: 80px;
-  }
 }
 
 .timeline-card__date {
@@ -300,8 +298,14 @@
   }
 }
 
-.timeline-block__nav-btn { color: var(--color-text)  }
-.chev { display: block; margin: auto; }
+.timeline-block__nav-btn {
+  color: var(--color-text)
+}
+
+.chev {
+  display: block;
+  margin: auto;
+}
 
 
 .timeline-block__pagination {
