@@ -289,6 +289,25 @@
 
 .timeline-block__pagination {
   color: red;
+
+  .swiper-pagination {
+    @media (min-width: 1024px) {
+      display: none;
+    }
+  }
+}
+
+.swiper-pagination-bullet {
+  width: 6px;
+  height: 6px;
+  background-color: rgba(66, 86, 122, 0.5); // неактивный цвет 50% светлее
+  opacity: 1;
+  transition: background-color 0.2s ease;
+  gap: 10px;
+
+  &.swiper-pagination-bullet-active {
+    background-color: #42567A;
+  }
 }
 
 .visually-hidden {
