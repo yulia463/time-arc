@@ -1,0 +1,57 @@
+@font-face {
+  font-family: "PT Sans Regular";
+  src: url('../../src/styles/fonts/PTSans-Regular.ttf') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Bebas Neue";
+  src: url('../../src/styles/fonts/BebasNeue-Regular.ttf') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --bg: #0e0f14;
+  --text: #e7e9ef;
+  --muted: #9aa0b5;
+  --accent: #5dd3ff;
+  --accent-2: #ffd45d;
+  --line: #2c3145;
+  --active: #ffffff;
+
+  --color-pink: #E27FB4;
+  --color-dark-pink: #DE67A6;
+  --color-blue: #3877EE;
+  --color-dark-blue: #5D5FE7;
+  --color-primary-4: #F0F4FF;
+  --color-black: #2D3436;
+  --color-gray: #C7CDD9;
+  --color-text: #42567A;
+  --color-btn: #42567A80;
+  --color-circle: #303E5880;
+
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  //margin: 0;
+  //font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+  //color: var(--text);
+  //background: radial-gradient(1200px 600px at 50% -10%, #171a25 0%, #0e0f14 60%);
+  font-family: 'PT Sans Regular', serif;
+}
+
+.demo-grid {
+  //display: grid;
+  //grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  //gap: 32px;
+  //padding: 32px;
+}

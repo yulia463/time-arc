@@ -1,46 +1,77 @@
-# Getting Started with Create React App
+# Timeline Block (React + TypeScript + SCSS + Webpack)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Интерактивный блок временных отрезков (2–6 сегментов) с круговым переключателем и слайдером событий.
+Демо содержит **максимальное количество** сегментов (6). Все линии на макете реализованы как часть вёрстки.
+Компонент изолирован: можно добавлять несколько экземпляров на страницу, логика и стили не конфликтуют.
 
-## Available Scripts
+## Технологии и требования
 
-In the project directory, you can run:
+- TypeScript
+- React 18 (можно заменить на нативный JS, но в этом проекте — React)
+- SCSS (без Bootstrap/Tailwind)
+- Сборка — Webpack
+- Слайдер — [Swiper](https://swiperjs.com/)
+- Анимации — [GSAP](https://greensock.com/gsap/)
+- Не используются jQuery и UI-библиотеки
 
-### `yarn start`
+## Запуск
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```bash
+# 1) Установка зависимостей
+npm install
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+# 2) Режим разработки (localhost:8080)
+npm run dev
 
-### `yarn test`
+# 3) Продакшн сборка
+npm run build
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Структура
 
-### `yarn build`
+```
+timeline-block/
+│── public/
+│   └── index.html
+│── src/
+│   ├── components/
+│   │   ├── TimelineBlock.tsx
+│   │   ├── TimelineBlock.scss
+│   │   └── EventSlider.tsx
+│   ├── data/
+│   │   └── timelineData.ts
+│   ├── styles/
+│   │   └── global.scss
+│   └── index.tsx
+│── package.json
+│── tsconfig.json
+│── webpack.config.js
+│── README.md
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Использование компонента
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```tsx
+import TimelineBlock from '@/components/TimelineBlock';
+import type { TimelineData } from '@/data/timelineData';
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+const myData: TimelineData = {/* ... */};
 
-### `yarn eject`
+<TimelineBlock data={myData} title="Мой таймлайн" initialIndex={0} instanceId="unique-1" />
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- `data` — данные с 2–6 сегментами.
+- `title` — заголовок.
+- `initialIndex` — какой сегмент активен при загрузке.
+- `instanceId` — уникальный id для навигации Swiper (если на странице несколько инстансов).
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Кастомизация дизайна
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+- Все стили изолированы в `.timeline-block`.
+- Точки по окружности равномерно распределяются в зависимости от количества сегментов.
+- Декоративные линии реализованы в DOM и являются частью вёрстки (`.timeline-block__decor`).
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Примечание
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Демо‑данные отражают примеры из макета (затмение 13 сентября, Tesla Semi и т.д.).
+Замените их на реальные данные из вашего проекта в `src/data/timelineData.ts`.
