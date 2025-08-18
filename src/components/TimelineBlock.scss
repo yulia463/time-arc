@@ -229,10 +229,8 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+  border: 1px solid red;
 
-  @media (min-width: 1024px) {
-    gap: 80px;
-  }
 }
 
 .timeline-card__date {
@@ -268,24 +266,47 @@
 .timeline-block__nav {
   display: flex;
   gap: 8px;
-  justify-content: flex-end;
-  margin-top: 12px;
-  border: 1px solid red;
+  border: 1px solid #00ffbb;
+
+  @media (min-width: 1024px) {
+    gap: 20px;
+    padding-left: 80px;
+  }
 }
 
 .timeline-block__nav-btn {
-  color: var(--color-btn);
-  border: 1px solid var(--color-btn);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-inactive);
+  border: 1px solid var(--color-inactive);
+  background: transparent;
   border-radius: 50%;
   cursor: pointer;
   width: 25px;
   height: 25px;
+  line-height: 1;
+
+  &.is-active {
+    color: darkred;
+    border-color: mediumvioletred;
+  }
 
   @media (min-width: 1024px) {
     width: 50px;
     height: 50px;
   }
 }
+
+.timeline-block__nav-btn {
+  color: var(--color-text)
+}
+
+.chev {
+  display: block;
+  margin: auto;
+}
+
 
 .timeline-block__pagination {
   color: red;
@@ -300,13 +321,13 @@
 .swiper-pagination-bullet {
   width: 6px;
   height: 6px;
-  background-color: rgba(66, 86, 122, 0.5); // неактивный цвет 50% светлее
+  background-color: var(--color-inactive);
   opacity: 1;
   transition: background-color 0.2s ease;
   gap: 10px;
 
   &.swiper-pagination-bullet-active {
-    background-color: #42567A;
+    background-color: var(--color-text);
   }
 }
 
