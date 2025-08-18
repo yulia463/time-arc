@@ -5,6 +5,7 @@
   font-style: normal;
   font-display: swap;
 }
+
 @font-face {
   font-family: "Bebas Neue";
   src: url('../../src/styles/fonts/BebasNeue-Regular.ttf') format('woff2');
@@ -35,7 +36,9 @@
 
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 html, body, #root {
   height: 100%;
