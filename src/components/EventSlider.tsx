@@ -38,7 +38,8 @@ const EventSlider: React.FC<Props> = ({ events, instanceId }) => {
           <SwiperSlide key={ev.id}>
             <article className="timeline-card" role="group" aria-label={ev.title}>
               <div className="timeline-card__date">
-                {new Date(ev.date).toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit' })}
+                  {new Date(ev.date).getFullYear()}
+                {/*{new Date(ev.date).toLocaleDateString('ru-RU', { year: 'numeric', month: '2-digit', day: '2-digit' })}*/}
               </div>
               <h3 className="timeline-card__title">{ev.title}</h3>
               {/*<p className="timeline-card__desc">{ev.description}</p>*/}

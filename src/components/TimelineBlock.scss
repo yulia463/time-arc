@@ -71,7 +71,8 @@
 
   @media (min-width: 1024px) {
     display: block;
-  }}
+  }
+}
 
 .timeline-block__dot {
   display: flex;
@@ -228,7 +229,7 @@
 .timeline-card {
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 15px;
 
   @media (min-width: 1024px) {
     gap: 80px;
@@ -246,7 +247,7 @@
   line-height: 120%;
   letter-spacing: 0;
   color: var(--color-blue);
-  padding: 0 0 15px 20px;
+  padding: 20px 0 0 20px;
 
   @media (min-width: 1024px) {
     font-size: 25px;
@@ -263,6 +264,7 @@
   letter-spacing: 0;
   color: var(--color-text);
   padding-left: 20px;
+  margin: 0;
 
   @media (min-width: 1024px) {
     padding-left: 80px;
