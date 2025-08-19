@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {gsap} from 'gsap';
 import type {TimelineData, TimelineSegment} from '@/data/timelineData';
 import EventSlider from './EventSlider';
@@ -20,6 +20,12 @@ const clampSegments = (segments: TimelineSegment[]) => {
     return segments;
 };
 
+const TARGET_ANGLE = 315; // целевой угол (право-верх). Можно подкорректировать.
+
+function norm360(angle: number) {
+    return ((angle % 360) + 360) % 360;
+}
+
 const formatFraction = (index: number, total: number) => {
     const pad = (n: number) => String(n).padStart(2, '0');
     return `${pad(index + 1)}/${pad(total)}`;
@@ -38,34 +44,118 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
     const rootRef = useRef<HTMLDivElement | null>(null);
     const infoRef = useRef<HTMLDivElement | null>(null);
 
+    const center = { x: 265, y: 265 };
+    const radius = 265;
+
     // Анимация смены секции
-    useEffect(() => {
-        if (!infoRef.current) return;
-        const ctx = gsap.context(() => {
-            const tl = gsap.timeline();
-            tl.fromTo(
-                infoRef.current!.querySelectorAll('[data-anim="fade-up"]'),
-                {autoAlpha: 0, y: 10},
-                {autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.06, ease: 'power2.out'}
-            );
-        }, rootRef);
-        return () => ctx.revert();
-    }, [activeIndex]);
+    //TODO this is not working at all
+    // useEffect(() => {
+    //     if (!infoRef.current) return;
+    //     const ctx = gsap.context(() => {
+    //         const tl = gsap.timeline();
+    //         tl.fromTo(
+    //             infoRef.current!.querySelectorAll('[data-anim="fade-up"]'),
+    //             {autoAlpha: 0, y: 10},
+    //             {autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.06, ease: 'power2.out'}
+    //         );
+    //     }, rootRef);
+    //     return () => ctx.revert();
+    // }, [activeIndex]);
 
     // Позиции интерактивных точек по окружности
     const points = useMemo(() => {
         const N = segments.length;
-        const radius = 265; // px
-        const center = {x: 265, y: 265}; // px — совпадает с размерами .timeline-block__dial svg viewBox
-        // стартуем сверху (угол -90°)
         return segments.map((seg, i) => {
-            console.log("seg>>", seg)
-            const angle = ((360 / N) * i) * (Math.PI / 180);
-            const x = center.x + radius * Math.cos(angle);
-            const y = center.y + radius * Math.sin(angle);
-            return {x, y, seg, i, id: seg.id};
+            const angleDeg = (360 / N) * i;
+            const angleRad = (angleDeg * Math.PI) / 180;
+            const x = center.x + radius * Math.cos(angleRad);
+            const y = center.y + radius * Math.sin(angleRad);
+            // baseAngle в градусах, согласован с тем, как вычислялись x,y
+            const baseAngle = norm360((Math.atan2(y - center.y, x - center.x) * 180) / Math.PI);
+            return { x, y, seg, i, id: seg.id, baseAngle };
         });
     }, [segments]);
+
+    const [rotation, setRotation] = useState(0);
+
+    const rotationRef = useRef<number>(0);
+    const ringRef = useRef<HTMLDivElement | null>(null);
+
+    const animatingRef = useRef(false);
+
+    const handleClick = useCallback(
+        (p: any) => {
+            if (animatingRef.current) return;
+            animatingRef.current = true;
+
+            // базовый угол точки (0..360)
+            const base = p.baseAngle;
+
+            // rotation, который ставит эту точку прямо в TARGET_ANGLE (mod 360)
+            const rawNeeded = norm360(TARGET_ANGLE - base); // in [0,360)
+            // возьмём несколько кандидатов (включая +/-360 чтобы выбрать ближайший путь)
+            const candidates = [
+                rawNeeded - 720,
+                rawNeeded - 360,
+                rawNeeded,
+                rawNeeded + 360,
+                rawNeeded + 720,
+            ];
+
+            // выбрать кандидат с минимальным абсолютным смещением от текущего rotation
+            let best = candidates[0];
+            let bestDelta = best - rotationRef.current;
+            for (const c of candidates) {
+                const d = c - rotationRef.current;
+                if (Math.abs(d) < Math.abs(bestDelta)) {
+                    best = c;
+                    bestDelta = d;
+                }
+            }
+
+            // направление: если точка справа — требуем вращение "против часовой стрелки",
+            // если слева — "по часовой".
+            // В этой кодовой базе считается: положительный delta = "в сторону увеличения rotation".
+            // Чтобы получить визуально "против часовой" — мы хотим delta < 0 (т.к. baseAngles
+            // и координатная система согласованы через atan2).
+            const clickedOnRight = p.x >= center.x;
+            const desiredSign = clickedOnRight ? -1 : 1;
+
+            // попытаемся найти кандидат, дающий нужный знак и не худший по длине
+            const filtered = candidates
+                .map((c) => ({ c, d: c - rotationRef.current }))
+                .filter((item) => item.d === 0 || Math.sign(item.d) === desiredSign);
+
+            if (filtered.length) {
+                // из подходящих выберем минимальный по абсолютной величине
+                const bestFiltered = filtered.reduce((a, b) =>
+                    Math.abs(b.d) < Math.abs(a.d) ? b : a
+                );
+                // если он не хуже текущего — возьмём его
+                if (Math.abs(bestFiltered.d) <= Math.abs(bestDelta)) {
+                    best = bestFiltered.c;
+                    bestDelta = bestFiltered.d;
+                }
+            }
+
+            const newRotation = best;
+
+            gsap.to(ringRef.current, {
+                duration: 0.7,
+                ease: 'power2.inOut',
+                rotation: newRotation,
+                onComplete: () => {
+                    rotationRef.current = newRotation;
+                    setRotation(newRotation);
+                    setActiveIndex(p.i); // подпись показываем только когда достигли целевой позиции
+                    animatingRef.current = false;
+                },
+            });
+        },
+        [center.x, center.y]
+    );
+
+
 
     return (
         <section className="timeline-block" ref={rootRef} aria-label={title}>
@@ -78,7 +168,7 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
             </header>
 
             <div className="timeline-block__dial" role="tablist" aria-label="Временные отрезки">
-                <div className="timeline-block__ring">
+                <div className="timeline-block__ring" ref={ringRef}>
                     {points.map(p => (
                         <div
                             key={p.seg.id}
@@ -88,7 +178,7 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
                                 'timeline-block__dot' + (activeIndex === p.i ? ' is-active' : '')
                             }
                             style={{left: p.x, top: p.y}}
-                            onClick={() => setActiveIndex(p.i)}
+                            onClick={() => handleClick(p)}
                         >
                             {activeIndex === p.i && (
                                 <>
