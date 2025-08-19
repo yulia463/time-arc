@@ -1,9 +1,13 @@
 .timeline-block {
   position: relative;
+  border: none;
   //width: min(720px, 92vw);
   //margin: 0 auto;
-  border-left: 1px solid var(--color-inactive);
-  border-right: 1px solid var(--color-inactive);
+
+  @media (min-width: 1024px) {
+    border-left: 1px solid var(--color-inactive);
+    border-right: 1px solid var(--color-inactive);
+  }
 }
 
 .timeline-block__header {
@@ -62,17 +66,24 @@
 
 .timeline-block__ring {
   display: none;
-
   border: 1px solid var(--color-inactive);
   position: relative;
   inset: 0;
   border-radius: 50%;
   width: 530px;
   height: 530px;
-
+  z-index: 20;
   @media (min-width: 1024px) {
     display: block;
   }
+}
+
+.timeline-block__dot.is-active {
+  border: 1px solid var(--color-circle-inactive);
+  width: 56px;
+  height: 56px;
+  background-color: var(--color-white);
+
 }
 
 .timeline-block__dot {
@@ -81,7 +92,7 @@
   justify-content: center;
   position: absolute;
   transform: translate(-50%, -50%);
-
+  border: 1px solid var(--color-circle-inactive);
   width: 6px;
   height: 6px;
   border-radius: 50%;
@@ -89,17 +100,19 @@
   color: var(--color-text);
   cursor: pointer;
   transition: transform .15s ease, background .2s ease, box-shadow .2s ease;
+  z-index: 5;
 
   &:hover {
     width: 56px;
     height: 56px;
-    background-color: #F4F5F9;
-    border: 1px solid #303E5880;
+    background-color: var(--color-white);
+    border: 1px solid var(--color-circle-inactive);
+    z-index: 5;
   }
 
   .timeline-block__label {
     position: absolute;
-    left: 120%; // смещение вправо от точки
+    left: 550%; // смещение вправо от точки
     top: 50%;
     transform: translateY(-50%);
     white-space: nowrap;
@@ -110,21 +123,12 @@
   }
 }
 
-.timeline-block__dot.is-active {
-  border: 1px solid var(#303E5880);
-  width: 56px;
-  height: 56px;
-  //изменить цвет background и бортик
-  background-color: #F4F5F9;
-}
-
 .timeline-block__info {
-  border: 1px solid red;
   position: absolute;
   display: flex;
   place-items: center;
   pointer-events: none;
-
+  z-index: 10;
 }
 
 .timeline-block__years {
@@ -133,7 +137,6 @@
   font-weight: 700;
   font-size: 56px;
   margin-bottom: 57px;
-  border: 1px solid slateblue;
 
   @media (min-width: 1024px) {
     font-size: 200px;
@@ -189,6 +192,7 @@
   background: var(--color-gray);
   top: 57px;
 
+
   @media (min-width: 1024px) {
     display: none;
   }
@@ -240,7 +244,6 @@
 }
 
 .timeline-card__date {
-  border: 1px solid blue;
   font-family: "Bebas Neue", serif;
   font-size: 16px;
   font-weight: 400;
@@ -271,7 +274,6 @@
 .timeline-block__nav {
   display: flex;
   gap: 8px;
-  border: 1px solid #00ffbb;
 
   @media (min-width: 1024px) {
     gap: 20px;
@@ -291,11 +293,6 @@
   width: 25px;
   height: 25px;
   line-height: 1;
-
-  &.is-active {
-    color: darkred;
-    border-color: mediumvioletred;
-  }
 
   @media (min-width: 1024px) {
     width: 50px;

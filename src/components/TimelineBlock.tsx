@@ -39,12 +39,13 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
                                                      }) => {
     const segments = useMemo(() => clampSegments(data.segments), [data.segments]);
     const [activeIndex, setActiveIndex] = useState(Math.min(Math.max(0, initialIndex), segments.length - 1));
+    const [hoverIndex, setHoverIndex] = useState<number | null>(null);
     const active = segments[activeIndex];
 
     const rootRef = useRef<HTMLDivElement | null>(null);
     const infoRef = useRef<HTMLDivElement | null>(null);
 
-    const center = { x: 265, y: 265 };
+    const center = {x: 265, y: 265};
     const radius = 265;
 
     // Анимация смены секции
@@ -72,7 +73,7 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
             const y = center.y + radius * Math.sin(angleRad);
             // baseAngle в градусах, согласован с тем, как вычислялись x,y
             const baseAngle = norm360((Math.atan2(y - center.y, x - center.x) * 180) / Math.PI);
-            return { x, y, seg, i, id: seg.id, baseAngle };
+            return {x, y, seg, i, id: seg.id, baseAngle};
         });
     }, [segments]);
 
@@ -123,7 +124,7 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
 
             // попытаемся найти кандидат, дающий нужный знак и не худший по длине
             const filtered = candidates
-                .map((c) => ({ c, d: c - rotationRef.current }))
+                .map((c) => ({c, d: c - rotationRef.current}))
                 .filter((item) => item.d === 0 || Math.sign(item.d) === desiredSign);
 
             if (filtered.length) {
@@ -156,7 +157,6 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
     );
 
 
-
     return (
         <section className="timeline-block" ref={rootRef} aria-label={title}>
             <header className="timeline-block__header" data-anim="fade-up">
@@ -169,28 +169,80 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
 
             <div className="timeline-block__dial" role="tablist" aria-label="Временные отрезки">
                 <div className="timeline-block__ring" ref={ringRef}>
-                    {points.map(p => (
-                        <div
-                            key={p.seg.id}
-                            role="tab"
-                            aria-selected={activeIndex === p.i}
-                            className={
-                                'timeline-block__dot' + (activeIndex === p.i ? ' is-active' : '')
-                            }
-                            style={{left: p.x, top: p.y}}
-                            onClick={() => handleClick(p)}
-                        >
-                            {activeIndex === p.i && (
-                                <>
-                                    <span>{p.id}</span>
-                                    <span className="timeline-block__label">{p.seg.label}</span>
-                                </>
 
-                            )}
-                            {/*<span className="visually-hidden">{p.seg.label} {p.seg.fromYear}–{p.seg.toYear}</span>*/}
-                        </div>
-                    ))}
-                </div>
+                    {points.map((p) => {
+                        const isActive = activeIndex === p.i;
+                        const isHovered = hoverIndex === p.i;
+
+                        // число всегда видно, если точка активна
+                        const showNumber = isActive || isHovered;
+
+                        // лейбл показываем только когда анимация завершена и точка активна
+                        const showLabel = isActive && !animatingRef.current;
+
+                        return (
+                            <div
+                                key={p.seg.id}
+                                role="tab"
+                                aria-selected={isActive}
+                                className={'timeline-block__dot' + (isActive ? ' is-active' : '')}
+                                style={{ left: p.x, top: p.y }}
+                                onClick={() => handleClick(p)}
+                                onMouseEnter={() => setHoverIndex(p.i)}
+                                onMouseLeave={() => setHoverIndex(null)}
+                            >
+                                {showNumber && (
+                                    <div
+                                        className="timeline-block__content"
+                                        style={{
+                                            transform: `rotate(${-rotation}deg)`,
+                                            transformOrigin: 'center',
+                                        }}
+                                    >
+                                        <span>{p.id}</span>
+                                        {showLabel && <span className="timeline-block__label">{p.seg.label}</span>}
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
+
+
+
+
+                    {/*{points.map(p => {*/}
+                    {/*    const isActive = activeIndex === p.i;*/}
+                    {/*    return (*/}
+
+                    {/*        <div*/}
+                    {/*            key={p.seg.id}*/}
+                    {/*            role="tab"*/}
+                    {/*            aria-selected={isActive}*/}
+                    {/*            // aria-selected={activeIndex === p.i}*/}
+                    {/*            // className={*/}
+                    {/*            //     'timeline-block__dot' + (activeIndex === p.i ? ' is-active' : '')*/}
+                    {/*            // }*/}
+                    {/*            className={'timeline-block__dot' + (isActive ? ' is-active' : '')}*/}
+                    {/*            style={{left: p.x, top: p.y}}*/}
+                    {/*            onClick={() => handleClick(p)}*/}
+                    {/*        >*/}
+                    {/*            /!*{activeIndex === p.i && (*!/*/}
+                    {/*            {isActive && (*/}
+                    {/*                <div*/}
+                    {/*                    className="timeline-block__content"*/}
+                    {/*                    style={{transform: `rotate(${-rotation}deg)`}}*/}
+                    {/*                >*/}
+                    {/*                    <span>{p.id}</span>*/}
+                    {/*                    <span className="timeline-block__label">{p.seg.label}</span>*/}
+
+                    {/*                </div>*/}
+                    {/*            )}*/}
+                    {/*            /!*<span className="visually-hidden">{p.seg.label} {p.seg.fromYear}–{p.seg.toYear}</span>*!/*/}
+                    {/*        </div>*/}
+                    {/*    );*/}
+                    {/*})}*/}
+
+               </div>
 
                 <div className="timeline-block__info" ref={infoRef}>
                     <div className="timeline-block__years" data-anim="fade-up">
