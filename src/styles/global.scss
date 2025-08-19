@@ -36,6 +36,7 @@
   --color-circle: #303E5880;
   --color-circle-inactive: #808AA680;
   --color-inactive: rgba(66, 86, 122, 0.5);
+  --color-background: rgb(244, 245, 249);
 }
 
 * {
@@ -52,6 +53,8 @@ body {
   //color: var(--text);
   //background: radial-gradient(1200px 600px at 50% -10%, #171a25 0%, #0e0f14 60%);
   font-family: 'PT Sans Regular', serif;
+  background-color: var(--color-background);
+
 }
 
 .demo-grid {
@@ -60,6 +63,7 @@ body {
   //gap: 32px;
   //padding: 32px;
   padding-left: 15px;
+  background-color: var(--color-background);
 
   @media (min-width: 1024px) {
     padding-left: 0;

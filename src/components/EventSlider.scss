@@ -1,0 +1,81 @@
+.timeline-block__slider {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ffae00;
+}
+
+.timeline-card {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  border: 1px solid red;
+
+  @media (min-width: 1024px) {
+
+  }
+}
+
+.timeline-card__date {
+  font-family: "Bebas Neue", serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 120%;
+  letter-spacing: 0;
+  color: var(--color-blue);
+  padding-top: 20px;
+
+  @media (min-width: 1024px) {
+    font-size: 25px;
+    padding-left: 80px;
+  }
+}
+
+.timeline-card__title {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 145%;
+  letter-spacing: 0;
+  color: var(--color-text);
+  margin: 0;
+
+  @media (min-width: 1024px) {
+    padding-left: 80px;
+  }
+}
+
+.timeline-block__nav-btn--extra {
+  display: none;
+  background-color: white;
+  border: none;
+  @media (min-width: 1024px) {
+    display: block;
+    cursor: pointer;
+  }
+}
+
+.timeline-block__footer {
+  display: flex;
+  border: 1px solid #003cff;
+}
+
+.timeline-block__date-header {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text);
+  margin-bottom: 10px;
+}
+
+.timeline-block__pagination {
+  display: flex;
+  padding-left: 38px;
+
+  .swiper-pagination {
+    @media (min-width: 1024px) {
+      display: none;
+    }
+  }
+}
+
+
+
+

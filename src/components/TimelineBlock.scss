@@ -73,6 +73,7 @@
   width: 530px;
   height: 530px;
   z-index: 20;
+
   @media (min-width: 1024px) {
     display: block;
   }
@@ -236,40 +237,6 @@
 
 }
 
-.timeline-card {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  border: 1px solid red;
-}
-
-.timeline-card__date {
-  font-family: "Bebas Neue", serif;
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 120%;
-  letter-spacing: 0;
-  color: var(--color-blue);
-  padding-top: 20px;
-
-  @media (min-width: 1024px) {
-    font-size: 25px;
-    padding-left: 80px;
-  }
-}
-
-.timeline-card__title {
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 145%;
-  letter-spacing: 0;
-  color: var(--color-text);
-  margin: 0;
-
-  @media (min-width: 1024px) {
-    padding-left: 80px;
-  }
-}
 
 .timeline-block__nav {
   display: flex;
@@ -310,8 +277,6 @@
 }
 
 .timeline-block__pagination {
-  color: red;
-
   .swiper-pagination {
     @media (min-width: 1024px) {
       display: none;
@@ -339,5 +304,4 @@
   overflow: hidden;
   clip: rect(1px, 1px, 1px, 1px);
   white-space: nowrap;
-  border: 1px solid red;
 }
