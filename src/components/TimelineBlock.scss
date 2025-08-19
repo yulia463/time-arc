@@ -2,6 +2,8 @@
   position: relative;
   //width: min(720px, 92vw);
   //margin: 0 auto;
+  border-left: 1px solid var(--color-inactive);
+  border-right: 1px solid var(--color-inactive);
 }
 
 .timeline-block__header {
@@ -47,7 +49,6 @@
 }
 
 .timeline-block__dial {
-  border: 1px solid #8400ff;
   position: relative;
   height: 20vh;
   display: grid;
@@ -62,7 +63,7 @@
 .timeline-block__ring {
   display: none;
 
-  border: 1px solid var(--color-text);
+  border: 1px solid var(--color-inactive);
   position: relative;
   inset: 0;
   border-radius: 50%;
@@ -88,6 +89,13 @@
   color: var(--color-text);
   cursor: pointer;
   transition: transform .15s ease, background .2s ease, box-shadow .2s ease;
+
+  &:hover {
+    width: 56px;
+    height: 56px;
+    background-color: #F4F5F9;
+    border: 1px solid #303E5880;
+  }
 
   .timeline-block__label {
     position: absolute;
@@ -158,8 +166,6 @@
   color: var(--color-text);
   font-size: 20px;
   font-weight: 700;
-  //text-transform: uppercase;
-  border: 1px solid #ffea00;
   line-height: 30px;
   letter-spacing: 0;
 }
@@ -189,18 +195,19 @@
 }
 
 .timeline-block__decor {
-  position: absolute;
+  //position: absolute;
   opacity: .7;
   z-index: 0;
 }
 
 .timeline-block__decor--h {
   display: none;
+  position: absolute;
   top: 50%;
   left: 0;
   right: 0;
   height: 1px;
-  background-color: var(--color-text);
+  background-color: var(--color-inactive);
 
   @media (min-width: 1024px) {
     display: block;
@@ -209,18 +216,18 @@
 
 .timeline-block__decor--v {
   display: none;
+  position: fixed;
   left: 50%;
   top: 0;
   bottom: 0;
   width: 1px;
-  background-color: var(--color-text);
+  background-color: var(--color-inactive);
 
   @media (min-width: 1024px) {
     display: block;
   }
 }
 
-/* Слайдер */
 .timeline-block__slider {
 
 }
@@ -230,7 +237,6 @@
   flex-direction: column;
   gap: 15px;
   border: 1px solid red;
-
 }
 
 .timeline-card__date {
@@ -247,7 +253,6 @@
     font-size: 25px;
     padding-left: 80px;
   }
-
 }
 
 .timeline-card__title {
@@ -306,7 +311,6 @@
   display: block;
   margin: auto;
 }
-
 
 .timeline-block__pagination {
   color: red;
