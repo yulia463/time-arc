@@ -1,7 +1,5 @@
 .timeline-block__slider {
-  display: flex;
-  flex-direction: column;
-  border: 1px solid #ffae00;
+
 }
 
 .timeline-card {
@@ -9,13 +7,10 @@
   flex-direction: column;
   gap: 15px;
   border: 1px solid red;
-
-  @media (min-width: 1024px) {
-
-  }
 }
 
 .timeline-card__date {
+  border: 1px solid blue;
   font-family: "Bebas Neue", serif;
   font-size: 16px;
   font-weight: 400;
@@ -43,31 +38,52 @@
   }
 }
 
-.timeline-block__nav-btn--extra {
-  display: none;
-  background-color: white;
-  border: none;
+.timeline-block__nav {
+  display: flex;
+  gap: 8px;
+  border: 1px solid #00ffbb;
+
   @media (min-width: 1024px) {
-    display: block;
-    cursor: pointer;
+    gap: 20px;
+    padding-left: 80px;
   }
 }
 
-.timeline-block__footer {
+.timeline-block__nav-btn {
   display: flex;
-  border: 1px solid #003cff;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-inactive);
+  border: 1px solid var(--color-inactive);
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  width: 25px;
+  height: 25px;
+  line-height: 1;
+
+  &.is-active {
+    color: darkred;
+    border-color: mediumvioletred;
+  }
+
+  @media (min-width: 1024px) {
+    width: 50px;
+    height: 50px;
+  }
 }
 
-.timeline-block__date-header {
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--color-text);
-  margin-bottom: 10px;
+.timeline-block__nav-btn {
+  color: var(--color-text)
+}
+
+.chev {
+  display: block;
+  margin: auto;
 }
 
 .timeline-block__pagination {
-  display: flex;
-  padding-left: 38px;
+  color: red;
 
   .swiper-pagination {
     @media (min-width: 1024px) {
@@ -76,6 +92,25 @@
   }
 }
 
+.swiper-pagination-bullet {
+  width: 6px;
+  height: 6px;
+  background-color: var(--color-inactive);
+  opacity: 1;
+  transition: background-color 0.2s ease;
+  gap: 10px;
 
+  &.swiper-pagination-bullet-active {
+    background-color: var(--color-text);
+  }
+}
 
-
+.visually-hidden {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  white-space: nowrap;
+  border: 1px solid red;
+}

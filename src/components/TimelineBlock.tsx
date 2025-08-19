@@ -20,7 +20,7 @@ const clampSegments = (segments: TimelineSegment[]) => {
     return segments;
 };
 
-const TARGET_ANGLE = 315; // целевой угол (право-верх). Можно подкорректировать.
+const TARGET_ANGLE = 300; // целевой угол (право-верх). Можно подкорректировать.
 
 function norm360(angle: number) {
     return ((angle % 360) + 360) % 360;
@@ -40,6 +40,7 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
     const segments = useMemo(() => clampSegments(data.segments), [data.segments]);
     const [activeIndex, setActiveIndex] = useState(Math.min(Math.max(0, initialIndex), segments.length - 1));
     const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+    const [pendingIndex, setPendingIndex] = useState<number | null>(null);
     const active = segments[activeIndex];
 
     const rootRef = useRef<HTMLDivElement | null>(null);
@@ -48,22 +49,6 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
     const center = {x: 265, y: 265};
     const radius = 265;
 
-    // Анимация смены секции
-    //TODO this is not working at all
-    // useEffect(() => {
-    //     if (!infoRef.current) return;
-    //     const ctx = gsap.context(() => {
-    //         const tl = gsap.timeline();
-    //         tl.fromTo(
-    //             infoRef.current!.querySelectorAll('[data-anim="fade-up"]'),
-    //             {autoAlpha: 0, y: 10},
-    //             {autoAlpha: 1, y: 0, duration: 0.4, stagger: 0.06, ease: 'power2.out'}
-    //         );
-    //     }, rootRef);
-    //     return () => ctx.revert();
-    // }, [activeIndex]);
-
-    // Позиции интерактивных точек по окружности
     const points = useMemo(() => {
         const N = segments.length;
         return segments.map((seg, i) => {
@@ -84,9 +69,22 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
 
     const animatingRef = useRef(false);
 
+    const setRingVars = (val: number) => {
+        if (!ringRef.current) return;
+        ringRef.current.style.setProperty('--ring-rot-deg', `${val}deg`);
+        ringRef.current.style.setProperty('--ring-counter-rot-deg', `${-val}deg`);
+    };
+
+    useEffect(() => {
+        setRingVars(rotation);
+    }, [rotation]);
+
     const handleClick = useCallback(
         (p: any) => {
             if (animatingRef.current) return;
+
+            setPendingIndex(p.i);
+
             animatingRef.current = true;
 
             // базовый угол точки (0..360)
@@ -141,15 +139,24 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
 
             const newRotation = best;
 
+            ringRef.current?.classList.add('is-animating');
+
             gsap.to(ringRef.current, {
                 duration: 0.7,
                 ease: 'power2.inOut',
                 rotation: newRotation,
+                onUpdate: () => {
+                    // берём текущий угол из gsap и обновляем CSS-переменные для контр-поворота
+                    const cur = Number(gsap.getProperty(ringRef.current!, 'rotation')) || 0;
+                    setRingVars(cur);
+                },
                 onComplete: () => {
                     rotationRef.current = newRotation;
                     setRotation(newRotation);
                     setActiveIndex(p.i); // подпись показываем только когда достигли целевой позиции
+                    setPendingIndex(null);
                     animatingRef.current = false;
+                    ringRef.current?.classList.remove('is-animating');
                 },
             });
         },
@@ -171,7 +178,8 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
                 <div className="timeline-block__ring" ref={ringRef}>
 
                     {points.map((p) => {
-                        const isActive = activeIndex === p.i;
+                        const isActive = activeIndex === p.i && pendingIndex === null;
+                        const isFutureActive = pendingIndex === p.i;
                         const isHovered = hoverIndex === p.i;
 
                         // число всегда видно, если точка активна
@@ -182,32 +190,23 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
 
                         return (
                             <div
-                                key={p.seg.id}
-                                role="tab"
-                                aria-selected={isActive}
-                                className={'timeline-block__dot' + (isActive ? ' is-active' : '')}
-                                style={{ left: p.x, top: p.y }}
+                                className={'timeline-block__dot' +
+                                    (isActive ? ' is-active' : '') +
+                                    (isFutureActive ? ' is-future' : '')}
+                                style={{left: p.x, top: p.y}}
                                 onClick={() => handleClick(p)}
                                 onMouseEnter={() => setHoverIndex(p.i)}
                                 onMouseLeave={() => setHoverIndex(null)}
                             >
-                                {showNumber && (
-                                    <div
-                                        className="timeline-block__content"
-                                        style={{
-                                            transform: `rotate(${-rotation}deg)`,
-                                            transformOrigin: 'center',
-                                        }}
-                                    >
+                                {(isActive || isHovered) && (
+                                    <div className="timeline-block__content">
                                         <span>{p.id}</span>
-                                        {showLabel && <span className="timeline-block__label">{p.seg.label}</span>}
+                                        {isActive && <span className="timeline-block__label">{p.seg.label}</span>}
                                     </div>
                                 )}
                             </div>
                         );
                     })}
-
-
 
 
                     {/*{points.map(p => {*/}
@@ -242,7 +241,7 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
                     {/*    );*/}
                     {/*})}*/}
 
-               </div>
+                </div>
 
                 <div className="timeline-block__info" ref={infoRef}>
                     <div className="timeline-block__years" data-anim="fade-up">
@@ -259,7 +258,9 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
                 <div className="timeline-block__decor timeline-block__decor--v" aria-hidden="true"/>
             </div>
 
-            <EventSlider events={active.events} instanceId={instanceId}/>
+            <div className='eventslider-block'>
+                <EventSlider events={active.events} instanceId={instanceId}/>
+            </div>
         </section>
     );
 };
