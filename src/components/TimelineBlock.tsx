@@ -163,6 +163,17 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
         [center.x, center.y]
     );
 
+    const handleStep = (delta: number) => {
+        let newIndex = (activeIndex + delta + segments.length) % segments.length; // кольцевой эффект
+        const p = points[newIndex];
+        handleClick(p); // вращаем круг и обновляем активный элемент
+    };
+
+    const formatFraction = (index: number, total: number) => {
+        const pad = (n: number) => String(n).padStart(2, '0');
+        return `${pad(index + 1)}/${pad(total)}`;
+    };
+
 
     return (
         <section className="timeline-block" ref={rootRef} aria-label={title}>
@@ -207,40 +218,6 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
                             </div>
                         );
                     })}
-
-
-                    {/*{points.map(p => {*/}
-                    {/*    const isActive = activeIndex === p.i;*/}
-                    {/*    return (*/}
-
-                    {/*        <div*/}
-                    {/*            key={p.seg.id}*/}
-                    {/*            role="tab"*/}
-                    {/*            aria-selected={isActive}*/}
-                    {/*            // aria-selected={activeIndex === p.i}*/}
-                    {/*            // className={*/}
-                    {/*            //     'timeline-block__dot' + (activeIndex === p.i ? ' is-active' : '')*/}
-                    {/*            // }*/}
-                    {/*            className={'timeline-block__dot' + (isActive ? ' is-active' : '')}*/}
-                    {/*            style={{left: p.x, top: p.y}}*/}
-                    {/*            onClick={() => handleClick(p)}*/}
-                    {/*        >*/}
-                    {/*            /!*{activeIndex === p.i && (*!/*/}
-                    {/*            {isActive && (*/}
-                    {/*                <div*/}
-                    {/*                    className="timeline-block__content"*/}
-                    {/*                    style={{transform: `rotate(${-rotation}deg)`}}*/}
-                    {/*                >*/}
-                    {/*                    <span>{p.id}</span>*/}
-                    {/*                    <span className="timeline-block__label">{p.seg.label}</span>*/}
-
-                    {/*                </div>*/}
-                    {/*            )}*/}
-                    {/*            /!*<span className="visually-hidden">{p.seg.label} {p.seg.fromYear}–{p.seg.toYear}</span>*!/*/}
-                    {/*        </div>*/}
-                    {/*    );*/}
-                    {/*})}*/}
-
                 </div>
 
                 <div className="timeline-block__info" ref={infoRef}>
@@ -248,19 +225,41 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
                         <span className="timeline-block__firstDate">{active.fromYear}</span>
                         <span className="timeline-block__secondDate">{active.toYear}</span>
                     </div>
-                    {/*<div className="timeline-block__label" data-anim="fade-up">{active.label}</div>*/}
-                    {/*<div className="timeline-block__count" data-anim="fade-up">*/}
-                    {/*  {String(active.events.length).padStart(2, '0')}*/}
-                    {/*</div>*/}
                 </div>
                 <div className="timeline-block__mobile-divider" aria-hidden="true"/>
                 <div className="timeline-block__decor timeline-block__decor--h" aria-hidden="true"/>
                 <div className="timeline-block__decor timeline-block__decor--v" aria-hidden="true"/>
             </div>
 
-            <div className='eventslider-block'>
-                <EventSlider events={active.events} instanceId={instanceId}/>
+            <div className="timeline-block__controls">
+                <div className="timeline-block__dates" data-anim="fade-up">
+                    {formatFraction(activeIndex, segments.length)}
+                    {/*{active.seg.label} ({activeIndex + 1}/{segments.length})*/}
+                </div>
+                <div className="timeline-block__buttons">
+                    <button className="timeline-block__nav-btns" onClick={() => handleStep(-1)} aria-label="Назад">
+                        <svg className="chev chev--left"
+                            viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                            <polyline points="15 6 9 12 15 18" fill="none" stroke="currentColor" strokeWidth="2"
+                                      strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                    </button>
+
+                    <button className="timeline-block__nav-btns" onClick={() => handleStep(1)} aria-label="Вперёд">
+                        <svg className="chev chev--right"
+                             viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                            <polyline points="9 6 15 12 9 18" fill="none" stroke="currentColor" strokeWidth="2"
+                                      strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div className="eventslider-block">
+                    <EventSlider events={active.events} instanceId={instanceId}/>
+                </div>
             </div>
+
+
         </section>
     );
 };
