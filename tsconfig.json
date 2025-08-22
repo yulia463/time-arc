@@ -18,9 +18,7 @@
         "src/*"
       ]
     },
-    "types": [
-      "webpack-env"
-    ]
+    "types": []
   },
   "include": [
     "src"

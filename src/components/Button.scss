@@ -1,0 +1,27 @@
+.timeline-block__nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-blue);
+  background-color: var(--color-white);
+  border-radius: 50%;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  line-height: 1;
+  cursor: pointer;
+  margin: 15px;
+}
+
+.timeline-block__nav-btn--prev {
+  left: 10px;
+}
+
+.timeline-block__nav-btn--next {
+  right: 10px;
+}
+
+.chev {
+  display: block;
+  margin: auto;
+}
