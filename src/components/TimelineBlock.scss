@@ -131,12 +131,12 @@
 
   .timeline-block__label {
     position: absolute;
-    left: 550%; // смещение вправо от точки
+    left: 550%;
     top: 50%;
     transform: translateY(-50%);
     white-space: nowrap;
     color: var(--color-text);
-    pointer-events: none; // чтобы не мешал клику
+    pointer-events: none;
     font-size: 20px;
     line-height: 30px;
   }
@@ -165,10 +165,6 @@
   }
 }
 
-.eventslider-block {
-
-}
-
 .timeline-block__firstDate {
   color: var(--color-blue);
   text-transform: uppercase;
@@ -195,22 +191,12 @@
   letter-spacing: 0;
 }
 
-.timeline-block__count {
-  position: absolute;
-  font-size: 20px;
-  font-weight: 400;
-  color: var(--color-text);
-  line-height: 30px;
-  letter-spacing: 0;
-}
-
 .timeline-block__mobile-divider {
   position: relative;
   width: 280px;
   height: 1px;
   background: var(--color-gray);
   top: 57px;
-
 
   @media (min-width: 1024px) {
     display: none;
@@ -250,17 +236,14 @@
   }
 }
 
-.timeline-block__slider {
-
-}
-
-.timeline-block__nav {
-  display: flex;
-  gap: 8px;
+.eventslider-block {
+  display: block;
+  position: relative;
+  top: 20px;
+  padding-bottom: 100px;
 
   @media (min-width: 1024px) {
-    gap: 20px;
-    padding-left: 80px;
+    top: -120px;
   }
 }
 
@@ -269,7 +252,11 @@
   flex-direction: row;
   gap: 20px;
   color: var(--color-text);
-  padding: 20px 0 36px 80px;
+  padding: 10px 0 0 20px;
+
+  @media (min-width: 1024px) {
+    padding: 20px 0 0 80px;
+  }
 }
 
 .timeline-block__nav-btns {
@@ -303,40 +290,9 @@
   margin: auto;
 }
 
-.timeline-block__pagination {
-  cursor: pointer;
-  .swiper-pagination {
-    @media (min-width: 1024px) {
-      display: none;
-    }
-  }
-}
-
-.swiper-pagination-bullet {
-  width: 6px;
-  height: 6px;
-  background-color: var(--color-inactive);
-  opacity: 1;
-  transition: background-color 0.2s ease;
-  gap: 10px;
-
-  &.swiper-pagination-bullet-active {
-    background-color: var(--color-text);
-  }
-}
-
-.visually-hidden {
-  position: absolute !important;
-  height: 1px;
-  width: 1px;
-  overflow: hidden;
-  clip: rect(1px, 1px, 1px, 1px);
-  white-space: nowrap;
-}
-
 .timeline-block__controls {
   position: relative;
-  display: flex;
+  display: none;
   flex-direction: column;
   color: var(--color-text);
   font-size: 14px;
@@ -344,18 +300,23 @@
   line-height: 100%;
   letter-spacing: 0;
   top: -120px;
+
+  @media (min-width: 1024px) {
+    display: flex;
+  }
+}
+
+.timeline-block__dates-and-btns {
+  @media (min-width: 1024px) {
+    width: 50px;
+    height: 50px;
+  }
 }
 
 .timeline-block__dates {
-  padding-left: 80px;
-}
+  padding-left: 20px;
 
-/* На мобильных меняем местами слайдер и controls */
-@media (max-width: 768px) {
-  .timeline-block__controls {
-    order: 2;
-  }
-  .eventslider-block {
-    order: 1;
+  @media (min-width: 1024px) {
+    padding-left: 80px;
   }
 }

@@ -3,14 +3,13 @@ import {gsap} from 'gsap';
 import type {TimelineData, TimelineSegment} from '@/data/timelineData';
 import EventSlider from './EventSlider';
 import './TimelineBlock.scss';
+import TimelineNavButtons from "./TimelineNavButtons";
+
 
 export type TimelineBlockProps = {
     data: TimelineData;
-    /** Необязательный заголовок секции */
     title?: string;
-    /** В демонстрации используем 6 сегментов; компонент поддерживает 2–6 */
     initialIndex?: number;
-    /** Уникальный ID инстанса для независимых навигационных элементов */
     instanceId?: string;
 };
 
@@ -20,7 +19,7 @@ const clampSegments = (segments: TimelineSegment[]) => {
     return segments;
 };
 
-const TARGET_ANGLE = 300; // целевой угол (право-верх). Можно подкорректировать.
+const TARGET_ANGLE = 300;
 
 function norm360(angle: number) {
     return ((angle % 360) + 360) % 360;
@@ -82,17 +81,12 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
     const handleClick = useCallback(
         (p: any) => {
             if (animatingRef.current) return;
-
             setPendingIndex(p.i);
-
             animatingRef.current = true;
 
-            // базовый угол точки (0..360)
             const base = p.baseAngle;
+            const rawNeeded = norm360(TARGET_ANGLE - base);
 
-            // rotation, который ставит эту точку прямо в TARGET_ANGLE (mod 360)
-            const rawNeeded = norm360(TARGET_ANGLE - base); // in [0,360)
-            // возьмём несколько кандидатов (включая +/-360 чтобы выбрать ближайший путь)
             const candidates = [
                 rawNeeded - 720,
                 rawNeeded - 360,
@@ -101,7 +95,6 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
                 rawNeeded + 720,
             ];
 
-            // выбрать кандидат с минимальным абсолютным смещением от текущего rotation
             let best = candidates[0];
             let bestDelta = best - rotationRef.current;
             for (const c of candidates) {
@@ -112,25 +105,17 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
                 }
             }
 
-            // направление: если точка справа — требуем вращение "против часовой стрелки",
-            // если слева — "по часовой".
-            // В этой кодовой базе считается: положительный delta = "в сторону увеличения rotation".
-            // Чтобы получить визуально "против часовой" — мы хотим delta < 0 (т.к. baseAngles
-            // и координатная система согласованы через atan2).
             const clickedOnRight = p.x >= center.x;
             const desiredSign = clickedOnRight ? -1 : 1;
 
-            // попытаемся найти кандидат, дающий нужный знак и не худший по длине
             const filtered = candidates
                 .map((c) => ({c, d: c - rotationRef.current}))
                 .filter((item) => item.d === 0 || Math.sign(item.d) === desiredSign);
 
             if (filtered.length) {
-                // из подходящих выберем минимальный по абсолютной величине
                 const bestFiltered = filtered.reduce((a, b) =>
                     Math.abs(b.d) < Math.abs(a.d) ? b : a
                 );
-                // если он не хуже текущего — возьмём его
                 if (Math.abs(bestFiltered.d) <= Math.abs(bestDelta)) {
                     best = bestFiltered.c;
                     bestDelta = bestFiltered.d;
@@ -146,14 +131,13 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
                 ease: 'power2.inOut',
                 rotation: newRotation,
                 onUpdate: () => {
-                    // берём текущий угол из gsap и обновляем CSS-переменные для контр-поворота
                     const cur = Number(gsap.getProperty(ringRef.current!, 'rotation')) || 0;
                     setRingVars(cur);
                 },
                 onComplete: () => {
                     rotationRef.current = newRotation;
                     setRotation(newRotation);
-                    setActiveIndex(p.i); // подпись показываем только когда достигли целевой позиции
+                    setActiveIndex(p.i);
                     setPendingIndex(null);
                     animatingRef.current = false;
                     ringRef.current?.classList.remove('is-animating');
@@ -164,16 +148,10 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
     );
 
     const handleStep = (delta: number) => {
-        let newIndex = (activeIndex + delta + segments.length) % segments.length; // кольцевой эффект
+        let newIndex = (activeIndex + delta + segments.length) % segments.length;
         const p = points[newIndex];
-        handleClick(p); // вращаем круг и обновляем активный элемент
+        handleClick(p);
     };
-
-    const formatFraction = (index: number, total: number) => {
-        const pad = (n: number) => String(n).padStart(2, '0');
-        return `${pad(index + 1)}/${pad(total)}`;
-    };
-
 
     return (
         <section className="timeline-block" ref={rootRef} aria-label={title}>
@@ -182,7 +160,6 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
                     index === 1 ? <span key={index} className="second-word">{word}</span> :
                         <span key={index}>{word} </span>
                 )}</div>
-                {/*<div className="timeline-block__fraction" aria-live="polite">{formatFraction(activeIndex, segments.length)}</div>*/}
             </header>
 
             <div className="timeline-block__dial" role="tablist" aria-label="Временные отрезки">
@@ -192,12 +169,6 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
                         const isActive = activeIndex === p.i && pendingIndex === null;
                         const isFutureActive = pendingIndex === p.i;
                         const isHovered = hoverIndex === p.i;
-
-                        // число всегда видно, если точка активна
-                        const showNumber = isActive || isHovered;
-
-                        // лейбл показываем только когда анимация завершена и точка активна
-                        const showLabel = isActive && !animatingRef.current;
 
                         return (
                             <div
@@ -234,31 +205,20 @@ const TimelineBlock: React.FC<TimelineBlockProps> = ({
             <div className="timeline-block__controls">
                 <div className="timeline-block__dates" data-anim="fade-up">
                     {formatFraction(activeIndex, segments.length)}
-                    {/*{active.seg.label} ({activeIndex + 1}/{segments.length})*/}
-                </div>
-                <div className="timeline-block__buttons">
-                    <button className="timeline-block__nav-btns" onClick={() => handleStep(-1)} aria-label="Назад">
-                        <svg className="chev chev--left"
-                            viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
-                            <polyline points="15 6 9 12 15 18" fill="none" stroke="currentColor" strokeWidth="2"
-                                      strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                    </button>
-
-                    <button className="timeline-block__nav-btns" onClick={() => handleStep(1)} aria-label="Вперёд">
-                        <svg className="chev chev--right"
-                             viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
-                            <polyline points="9 6 15 12 9 18" fill="none" stroke="currentColor" strokeWidth="2"
-                                      strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                    </button>
                 </div>
 
-                <div className="eventslider-block">
-                    <EventSlider events={active.events} instanceId={instanceId}/>
-                </div>
+                <TimelineNavButtons
+                    onPrev={() => handleStep(-1)}
+                    onNext={() => handleStep(1)}
+                />
             </div>
-
+            <div className="eventslider-block">
+                <EventSlider onPrev={() => handleStep(-1)}
+                             onNext={() => handleStep(1)}
+                             events={active.events}
+                             instanceId={instanceId}
+                />
+            </div>
 
         </section>
     );
